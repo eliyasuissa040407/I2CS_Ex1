@@ -24,12 +24,8 @@ public class Ex1 {
 	 * @return f(x) - the polynomial function value at x.
 	 */
 	public static double f(double[] poly, double x) {
-		double ans = 0;
-		for(int i=0;i<poly.length;i++) {
-			double c = Math.pow(x, i);
-			ans += c*poly[i];
-		}
-		return ans;
+		if (poly.length == 0) { return 0;}
+
 	}
 	/** Given a polynomial function (p), a range [x1,x2] and an epsilon eps.
 	 * This function computes an x value (x1<=x<=x2) for which |p(x)| < eps, 
