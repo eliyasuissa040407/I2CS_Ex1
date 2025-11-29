@@ -25,7 +25,11 @@ public class Ex1 {
 	 */
 	public static double f(double[] poly, double x) {
 		if (poly.length == 0) { return 0;}
-
+        double ans = poly[poly.length-1];
+        for (int i = poly.length-2; i >= 0; i--) {
+            ans = ans * x + poly[i];
+        }
+        return ans;
 	}
 	/** Given a polynomial function (p), a range [x1,x2] and an epsilon eps.
 	 * This function computes an x value (x1<=x<=x2) for which |p(x)| < eps, 
