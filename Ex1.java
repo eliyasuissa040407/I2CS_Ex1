@@ -92,18 +92,19 @@ public class Ex1 {
 	 * @param p2 second polynomial function
 	 * @return true iff p1 represents the same polynomial function as p2.
 	 */
-	public static boolean equals(double[] p1, double[] p2) {
-		boolean ans = true;
+    public static boolean equals(double[] p1, double[] p2) {
+        boolean ans = true;
         if (p1 == null && p2 == null) {return true;}
         if (p1 == null || p2 == null) {return false;}
-        for (int i = 0; i < p1.length; i+=1) {
-            if (f(p1,i)- f(p2,i) > EPS) {
-                return false;
+        if (p1.length <= p2.length){
+            for (int i = 0; i < p1.length; i+=1) {
+                if (Math.abs(f(p1,i) - f(p2,i)) > EPS) {
+                    return false;
+                }
             }
-        }
-
-		return ans;
-	}
+            return true;
+        } else {return equals(p2,p1);}
+    }
 
 	/** 
 	 * Computes a String representing the polynomial function.
@@ -139,13 +140,14 @@ public class Ex1 {
 	 * @param eps - epsilon (positive small value (often 10^-3, or 10^-6).
 	 * @return an x value (x1<=x<=x2) for which |p1(x) - p2(x)| < eps.
 	 */
-	public static double sameValue(double[] p1, double[] p2, double x1, double x2, double eps) {
-		double ans = x1;
-        /** add you code below
-
-         /////////////////// */
-		return ans;
-	}
+    public static double sameValue(double[] p1, double[] p2, double x1, double x2, double eps) {
+        double f1 = ((f(p1,x1)-f(p2,x1)));
+        double x12 = (x1+x2)/2;
+        double f12 = f(p1,x12) - f(p2,x12);
+        if (Math.abs(f12) < eps){return x12;}
+        if (f12 * f1 <= 0){return(sameValue(p1, p2, x1, x12, eps));}
+        else {return(sameValue(p1, p2, x12, x2, eps));}
+    }
 	/**
 	 * Given a polynomial function (p), a range [x1,x2] and an integer with the number (n) of sample points.
 	 * This function computes an approximation of the length of the function between f(x1) and f(x2) 
@@ -158,13 +160,17 @@ public class Ex1 {
 	 * @param numberOfSegments - (A positive integer value (1,2,...).
 	 * @return the length approximation of the function between f(x1) and f(x2).
 	 */
-	public static double length(double[] p, double x1, double x2, int numberOfSegments) {
-		double ans = x1;
-        /** add you code below
-
-         /////////////////// */
-		return ans;
-	}
+    public static double length(double[] p, double x1, double x2, int numberOfSegments) {
+        double ans = 0;
+        if (x1 <= x2){
+            double jump = Math.abs(x2 - x1) / numberOfSegments;
+            for (double i = x1; i+EPS < x2; i+=jump) {
+                double distance = Math.sqrt(jump * jump + Math.pow(f(p, i) - f(p, i + jump), 2));
+                ans += distance;
+            }
+            return ans;
+        } else {return length(p, x2, x1, numberOfSegments);}
+    }
 	
 	/**
 	 * Given two polynomial functions (p1,p2), a range [x1,x2] and an integer representing the number of Trapezoids between the functions (number of samples in on each polynom).
@@ -177,28 +183,74 @@ public class Ex1 {
 	 * @param numberOfTrapezoid - a natural number representing the number of Trapezoids between x1 and x2.
 	 * @return the approximated area between the two polynomial functions within the [x1,x2] range.
 	 */
-	public static double area(double[] p1,double[]p2, double x1, double x2, int numberOfTrapezoid) {
-		double ans = 0;
-        /** add you code below
-
-         /////////////////// */
-		return ans;
-	}
+    public static double area(double[] p1,double[]p2, double x1, double x2, int numberOfTrapezoid) {
+        double ans = 0;
+        if (x1 <= x2){
+            double jump = Math.abs(x2 - x1) / numberOfTrapezoid;
+            for (double i = x1; i+EPS < x2; i+=jump) {
+                double base1 = f(p1, i) - f(p2, i);
+                double base2 = f(p1, i + jump) - f(p2, i + jump);
+                if (base1 * base2 < 0) {
+                    double mid = sameValue(p1, p2, i, i+jump, EPS);
+                    double area1 = Math.abs(((mid-i)*base1)/2);
+                    double area2 = Math.abs(((i+jump-mid)*base2)/2);
+                    ans += area1 + area2;
+                }
+                else {
+                    ans += Math.abs(((base1+base2)*jump)/2);
+                }
+            }
+            return ans;
+        } else {return area(p1, p2, x2, x1, numberOfTrapezoid);}
+    }
 	/**
 	 * This function computes the array representation of a polynomial function from a String
 	 * representation. Note:given a polynomial function represented as a double array,
 	 * getPolynomFromString(poly(p)) should return an array equals to p.
 	 * 
-	 * @param p - a String representing polynomial function.
+	 * @param polynomial - a String representing polynomial function.
 	 * @return
 	 */
-	public static double[] getPolynomFromString(String p) {
-		double [] ans = ZERO;//  -1.0x^2 +3.0x +2.0
-        /** add you code below
-
-         /////////////////// */
-		return ans;
-	}
+    public static double[] getPolynomFromString(String polynomial) {
+        polynomial = polynomial.replace(" ", "");
+        String[] terms = polynomial.split("(?=[+-])");
+        int maxDegree = 0;
+        for (String term : terms) {
+            if (term.contains("^")) {
+                int degree = Integer.parseInt(term.substring(term.indexOf("^") + 1));
+                maxDegree = Math.max(maxDegree, degree);
+            } else if (term.contains("x")) {
+                maxDegree = Math.max(maxDegree, 1);
+            }
+        }
+        double[] coefficients = new double[maxDegree + 1];
+        for (String term : terms) {
+            if (term.isEmpty()) continue;
+            double coeff;
+            int degree;
+            if (term.contains("x")) {
+                int xIndex = term.indexOf("x");
+                String coeffStr = term.substring(0, xIndex);
+                if (coeffStr.equals("+") || coeffStr.isEmpty()) {
+                    coeff = 1.0;
+                } else if (coeffStr.equals("-")) {
+                    coeff = -1.0;
+                } else {
+                    coeff = Double.parseDouble(coeffStr);
+                }
+                if (term.contains("^")) {
+                    degree = Integer.parseInt(term.substring(term.indexOf("^") + 1));
+                } else {
+                    degree = 1;
+                }
+            } else {
+                coeff = Double.parseDouble(term);
+                degree = 0;
+            }
+            coefficients[degree] = coeff;
+        }
+        return coefficients;
+    }
 	/**
 	 * This function computes the polynomial function which is the sum of two polynomial functions (p1,p2)
 	 * @param p1
