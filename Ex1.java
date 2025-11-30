@@ -257,36 +257,74 @@ public class Ex1 {
 	 * @param p2
 	 * @return
 	 */
-	public static double[] add(double[] p1, double[] p2) {
-		double [] ans = ZERO;//
-        /** add you code below
+    public static double[] add(double[] p1, double[] p2) {
 
-         /////////////////// */
-		return ans;
-	}
-	/**
+        double[] ans = ZERO;
+
+        if (p1 == null && p2 != null) {return p2;}
+        if (p1 != null && p2 == null) {return p1;}
+        if (p1.length > p2.length) {
+            ans = new double[p1.length];
+            for (int i = 0; i < p2.length; i++) {
+                ans[i] += p2[i];
+                ans[i] += p1[i];
+            }
+
+            for (int i = p2.length; i < p1.length; i++) {
+                ans[i] += p1[i];
+            }
+        }
+
+        else {
+            ans = new double[p2.length];
+            for (int i = 0; i < p1.length; i++) {
+                ans[i] += p2[i];
+                ans[i] += p1[i];
+            }
+
+            for (int i = p1.length; i < p2.length; i++) {
+                ans[i] += p2[i];
+            }
+        }
+        return ans;
+    }
+
+
+    /**
 	 * This function computes the polynomial function which is the multiplication of two polynoms (p1,p2)
 	 * @param p1
 	 * @param p2
 	 * @return
 	 */
-	public static double[] mul(double[] p1, double[] p2) {
-		double [] ans = ZERO;//
-        /** add you code below
+    public static double[] mul(double[] p1, double[] p2) {
+        double [] ans = ZERO;//
+        ans = new double[p1.length+p2.length];
+        for (int i = 0; i < p1.length; i++) {
+            for (int j = 0; j < p2.length; j++) {
+                ans[i+j] += p1[i] * p2[j];
+            }
+        }
+        return ans;
+    }
 
-         /////////////////// */
-		return ans;
-	}
-	/**
+    /**
 	 * This function computes the derivative of the p0 polynomial function.
 	 * @param po
 	 * @return
 	 */
-	public static double[] derivative (double[] po) {
-		double [] ans = ZERO;//
-        /** add you code below
+    public static double[] derivative (double[] po) {
 
-         /////////////////// */
-		return ans;
-	}
+        double [] resultCoeffs = ZERO;
+
+        if (po.length==0||po.length==1) {return ZERO;}
+
+        resultCoeffs = new double[po.length-1];
+        for(int currentDegree=0; currentDegree < po.length-1; currentDegree++) {
+
+            resultCoeffs[currentDegree] = po[currentDegree+1]*(currentDegree+1);
+        }
+
+        return resultCoeffs;
+
+    }
 }
