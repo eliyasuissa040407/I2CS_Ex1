@@ -202,4 +202,62 @@ class Ex1Test {
 		double area = 58.5658;
 		assertEquals(a1,area, Ex1.EPS);
 	}
+    @Test
+    /**
+     * Tests root_rec for a simple known root: P(x) = x - 2, root is x=2.
+     */
+    public void testRootRec1() {
+        double[] p = {-2, 1};
+        double x1 = 1.0;
+        double x2 = 3.0;
+        double eps = 0.00001;
+        double expectedRoot = 2.0;
+
+        double actualRoot = Ex1.root_rec(p, x1, x2, eps);
+        assertTrue(Math.abs(actualRoot - expectedRoot) < eps,
+                "Expected root near " + expectedRoot + ", but got " + actualRoot);
+    }
+    @Test
+    /**
+     * Tests root_rec for a quadratic polynomial: P(x) = x^2 - 4, root is x=2.
+     */
+    public void testRootRec2() {
+        double[] p = {-4, 0, 1};
+        double x1 = 0.0;
+        double x2 = 3.0;
+        double eps = 0.00001;
+        double expectedRoot = 2.0;
+
+        double actualRoot = Ex1.root_rec(p, x1, x2, eps);
+        assertTrue(Math.abs(actualRoot - expectedRoot) < eps,
+                "Expected root near " + expectedRoot + ", but got " + actualRoot);
+    }
+    @Test
+    /**
+     * Tests PolynomFromPoints for 2 points (linear case).
+     * Points: (1, 3), (4, 9) -> P(x) = 2x + 1.
+     */
+    public void testPolynomFromPoints1_Linear() {
+        double[] xx = {1.0, 4.0};
+        double[] yy = {3.0, 9.0};
+        double[] expectedPolynom = {1.0, 2.0}; // P(x) = 1 + 2x
+
+        double[] actualPolynom = Ex1.PolynomFromPoints(xx, yy);
+        assertTrue(Ex1.equals(actualPolynom, expectedPolynom),
+                "Expected polynom: [1.0, 2.0], but got: " + java.util.Arrays.toString(actualPolynom));
+    }
+    @Test
+    /**
+     * Tests PolynomFromPoints for 3 points (quadratic case).
+     * Points: (0, 0), (1, 1), (2, 4) -> P(x) = x^2.
+     */
+    public void testPolynomFromPoints2_Quadratic() {
+        double[] xx = {0.0, 1.0, 2.0};
+        double[] yy = {0.0, 1.0, 4.0};
+        double[] expectedPolynom = {0.0, 0.0, 1.0}; // P(x) = 0 + 0x + 1x^2
+
+        double[] actualPolynom = Ex1.PolynomFromPoints(xx, yy);
+        assertTrue(Ex1.equals(actualPolynom, expectedPolynom),
+                "Expected polynom: [0.0, 0.0, 1.0], but got: " + java.util.Arrays.toString(actualPolynom));
+    }
 }
