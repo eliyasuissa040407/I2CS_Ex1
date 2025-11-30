@@ -260,4 +260,125 @@ class Ex1Test {
         assertTrue(Ex1.equals(actualPolynom, expectedPolynom),
                 "Expected polynom: [0.0, 0.0, 1.0], but got: " + java.util.Arrays.toString(actualPolynom));
     }
+    @Test
+    /**
+     * Tests PolynomFromPoints for 3 points that form a constant function.
+     * Points: (-1, 5), (0, 5), (1, 5) -> P(x) = 5.
+     */
+    public void testPolynomFromPoints3_Quadratic() {
+        double[] xx = {-1.0, 0.0, 1.0};
+        double[] yy = {5.0, 5.0, 5.0};
+        double[] expectedPolynom = {5.0, 0.0, 0.0}; // P(x) = 5 + 0x + 0x^2
+
+        double[] actualPolynom = Ex1.PolynomFromPoints(xx, yy);
+        assertTrue(Ex1.equals(actualPolynom, expectedPolynom),
+                "Expected polynom: [5.0, 0.0, 0.0], but got: " + java.util.Arrays.toString(actualPolynom));
+    }
+    @Test
+    /**
+     * Tests sameValue for two linear polynomials:
+     * P1(x) = x and P2(x) = -x + 4. Intersection at x=2.
+     */
+    public void testSameValue1_SimpleLinear() {
+        double[] p1 = {0, 1};
+        double[] p2 = {4, -1};
+        double x1 = 0.0;
+        double x2 = 4.0;
+        double eps = 0.00001;
+        double expectedX = 2.0;
+
+        double actualX = Ex1.sameValue(p1, p2, x1, x2, eps);
+        assertTrue(Math.abs(actualX - expectedX) < eps,
+                "Expected intersection at " + expectedX + ", but got " + actualX);
+    }
+    @Test
+    /**
+     * Tests sameValue for P1(x) = x^2 and P2(x) = x + 2. Intersection at x=2.
+     */
+    public void testSameValue2_QuadraticAndLinear() {
+        double[] p1 = {0, 0, 1};
+        double[] p2 = {2, 1};
+        double x1 = 1.0;
+        double x2 = 3.0;
+        double eps = 0.00001;
+        double expectedX = 2.0;
+
+        double actualX = Ex1.sameValue(p1, p2, x1, x2, eps);
+        assertTrue(Math.abs(actualX - expectedX) < eps,
+                "Expected intersection at " + expectedX + ", but got " + actualX);
+    }
+    @Test
+    /**
+     * Tests length for a straight line P(x) = 3x + 1 from x=0 to x=4.
+     * Exact length is sqrt(160) approx 12.64911.
+     */
+    public void testLength1_StraightLine() {
+        double[] p = {1, 3};
+        double x1 = 0.0;
+        double x2 = 4.0;
+        int segments = 1000;
+        double expectedLength = 12.649110640673518;
+
+        double actualLength = Ex1.length(p, x1, x2, segments);
+        double tolerance = 0.001;
+        assertTrue(Math.abs(actualLength - expectedLength) < tolerance,
+                "Expected length: " + expectedLength + ", but got: " + actualLength);
+    }
+    @Test
+    /**
+     * Tests length for a constant function P(x) = 5 from x=1 to x=5.
+     * Exact length is 4.
+     */
+    public void testLength2_ConstantFunction() {
+        double[] p = {5};
+        double x1 = 1.0;
+        double x2 = 5.0;
+        int segments = 100;
+        double expectedLength = 4.0;
+
+        double actualLength = Ex1.length(p, x1, x2, segments);
+        double tolerance = 0.0001;
+        assertTrue(Math.abs(actualLength - expectedLength) < tolerance,
+                "Expected length: " + expectedLength + ", but got: " + actualLength);
+    }
+    @Test
+    /**
+     * Tests parsing of a standard polynomial: 3x^2 - 5x + 7.
+     */
+    public void testGetPolynomFromString1_Standard() {
+        String polynomial = "3x^2 - 5x + 7";
+        double[] expectedCoefficients = {7.0, -5.0, 3.0};
+
+        double[] actualCoefficients = Ex1.getPolynomFromString(polynomial);
+        assertTrue(java.util.Arrays.equals(actualCoefficients, expectedCoefficients),
+                "Expected: " + java.util.Arrays.toString(expectedCoefficients) +
+                        ", but got: " + java.util.Arrays.toString(actualCoefficients));
+    }
+    @Test
+    /**
+     * Tests parsing with implicit coefficients (1 and -1) and missing degrees: x^5 - x + 1.
+     */
+    public void testGetPolynomFromString2_ImplicitCoefficients() {
+        String polynomial = "x^5 - x + 1";
+        double[] expectedCoefficients = {1.0, -1.0, 0.0, 0.0, 0.0, 1.0};
+
+        double[] actualCoefficients = Ex1.getPolynomFromString(polynomial);
+        assertTrue(java.util.Arrays.equals(actualCoefficients, expectedCoefficients),
+                "Expected: " + java.util.Arrays.toString(expectedCoefficients) +
+                        ", but got: " + java.util.Arrays.toString(actualCoefficients));
+    }
+    @Test
+    /**
+     * Tests parsing of a constant polynomial: -15.
+     */
+    public void testGetPolynomFromString3_NoX() {
+        String polynomial = "-15";
+        double[] expectedCoefficients = {-15.0};
+
+        double[] actualCoefficients = Ex1.getPolynomFromString(polynomial);
+        assertTrue(java.util.Arrays.equals(actualCoefficients, expectedCoefficients),
+                "Expected: " + java.util.Arrays.toString(expectedCoefficients) +
+                        ", but got: " + java.util.Arrays.toString(actualCoefficients));
+    }
+
 }
