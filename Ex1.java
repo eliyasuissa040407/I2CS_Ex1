@@ -24,10 +24,10 @@ public class Ex1 {
 	 * @return f(x) - the polynomial function value at x.
 	 */
 	public static double f(double[] poly, double x) {
-		if (poly.length == 0) { return 0;}
-        double ans = poly[poly.length-1];
-        for (int i = poly.length-2; i >= 0; i--) {
-            ans = ans * x + poly[i];
+        double ans = 0;
+        for(int i=0;i<poly.length;i++) {
+            double c = Math.pow(x, i);
+            ans += c*poly[i];
         }
         return ans;
 	}
@@ -67,8 +67,8 @@ public class Ex1 {
             double a = (y2 - y1) / (x2 - x1);
             double b = y1 - a * x1;
 
-            ans[0] = a;
-            ans[1] = b;
+            ans[0] = b;
+            ans[1] = a;
         }
         else if (numPoints == 3) {
             double x1 = xx[0], x2 = xx[1], x3 = xx[2];
@@ -79,9 +79,9 @@ public class Ex1 {
             double b = y1 * (x3*x3 - x2*x2) + y2 * (x1*x1 - x3*x3) + y3 * (x2*x2 - x1*x1) / denom;
             double c = y1 - a * x1 * x1 - b * x1;
 
-            ans[0] = a;
+            ans[0] = c;
             ans[1] = b;
-            ans[2] = c;
+            ans[2] = a;
         }
 
         return ans;
@@ -94,9 +94,14 @@ public class Ex1 {
 	 */
 	public static boolean equals(double[] p1, double[] p2) {
 		boolean ans = true;
-        /** add you code below
+        if (p1 == null && p2 == null) {return true;}
+        if (p1 == null || p2 == null) {return false;}
+        for (int i = 0; i < p1.length; i+=1) {
+            if (f(p1,i)- f(p2,i) > EPS) {
+                return false;
+            }
+        }
 
-         /////////////////// */
 		return ans;
 	}
 
@@ -108,11 +113,19 @@ public class Ex1 {
 	 */
 	public static String poly(double[] poly) {
 		String ans = "";
-		if(poly.length==0) {ans="0";}
+		if(poly.length==0) {return ans="0";}
 		else {
-            /** add you code below
-
-             /////////////////// */
+            ans  = ""+poly[0];
+            int power = poly.length-2;
+            while(power>=0) {
+                if(poly[power]<0) {
+                    ans +=" "+ (poly[power] + "x^" + power);
+                }
+                else if (poly[power]>0){
+                    ans += " +" + (poly[power] + "x^" + power);
+                }
+                power--;
+            }
 		}
 		return ans;
 	}
